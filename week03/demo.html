@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>   
+        // StringToNumber
+        function convertStringToNumber(data) {
+            if (typeof(data)!='string') return '传入的参数类型不对，需传入String类型数据';
+            let arr = data.split('');
+            let result=0;
+            let len = arr.length;
+            let doc = data.indexOf('.'); //判断是否为小数
+            if(doc!=-1) arr.splice(doc,1);
+            arr.forEach((ele,index)=>{
+                result = result + Number(ele)*Math.pow(10,len - index - 1);
+            })
+            if(doc!=-1) result = result / Math.pow(10, len-doc);
+            return result;
+        }
+        let result = convertStringToNumber('.10295454');
+
+        // NumberToString，可转换为二~十六进制，data是传入的Number,scale是几进制
+        function convertNumberToString(data,scale) {
+            if(typeof(data)!='number') return '输入的值应该为Number类型数据'
+            if(scale<2&&scale>16&&typeof(scale)!='number') return '输入的进制数不对';
+            let powerArr = [];
+            let result = '';
+            let num = getPower(data,scale,powerArr);
+            console.log(powerArr)
+            for(let i=num[0]+1;i>0;i--){
+                var a = 0;
+                num.forEach(ele=>{
+                    if(ele+1==i){
+                        a++;
+                    }
+                })
+                // 将十一进制到十六进制的超过10的数转为a~g
+                switch(a){
+                    case 10:
+                        a = 'a';
+                        break;
+                    case 11:
+                        a = 'b';
+                        break;
+                    case 12:
+                        a = 'c';
+                        break;
+                    case 13:
+                        a = 'd';
+                        break;
+                    case 14:
+                        a = 'e';
+                        break;
+                    case 15:
+                        a = 'f';
+                        break;
+                    case 16:
+                        a = 'g';
+                        break;
+                }
+                result = result + a;
+            }
+            if(scale == 10){
+                result = data;
+            }
+            return result;
+        }
+        // scale的n次幂=data,递归计算出所有的n，放到power数组中存储
+        function getPower(data,scale,powerArr) {
+            let power = parseInt(Math.log(data)/Math.log(scale));
+            let m = Math.pow(scale,power);
+            powerArr.push(power);
+            if(m < data) getPower(data-m,scale,powerArr);
+            return powerArr;
+        }
+        let s = convertNumberToString(110,16);
+    </script>
+</body>
+</html>
